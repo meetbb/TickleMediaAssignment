@@ -15,8 +15,6 @@
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/app_name" />
 
-    c
-
     <LinearLayout
         android:id="@+id/desc_layout"
         android:layout_width="wrap_content"
@@ -33,7 +31,6 @@
             android:id="@+id/repo_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Meet Brahmbhatt"
             android:textSize="17sp"
             android:textStyle="bold" />
 
@@ -42,7 +39,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="He is one of the best developers in the history."
             android:textSize="15sp" />
     </LinearLayout>
 
