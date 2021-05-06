@@ -3,12 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context=".ui.MainActivity">
 
-    <fragment
+    <FrameLayout
         android:id="@+id/details_fragment"
-        class="com.drinfi.ticklemediaassignment.ui.fragments.RepositoryListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

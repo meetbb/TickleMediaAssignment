@@ -51,7 +51,11 @@ class RepositoryListFragment : Fragment() {
             Log.e("SELECTIOn", "Selected repo is: " + repo.login)
             activity!!.supportFragmentManager
                 .beginTransaction()
-                .add(R.id.details_fragment, RepoDetailsFragment.newInstance(), "RepoDetails")
+                .replace(
+                    R.id.details_fragment,
+                    RepoDetailsFragment.newInstance(repo.login),
+                    "RepoDetails"
+                ).addToBackStack(RepoDetailsFragment::class.simpleName)
                 .commit()
         })
         repo_recycler_view.adapter = githubReposAdapter
