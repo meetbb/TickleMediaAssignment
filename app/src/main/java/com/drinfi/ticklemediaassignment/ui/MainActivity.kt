@@ -10,6 +10,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //Default Fragment Added in frame layout.
         supportFragmentManager
             .beginTransaction()
             .add(
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        //Fragment removed on BackPress else default behaviour.
         if (supportFragmentManager.backStackEntryCount == 1) {
             finish()
         } else {

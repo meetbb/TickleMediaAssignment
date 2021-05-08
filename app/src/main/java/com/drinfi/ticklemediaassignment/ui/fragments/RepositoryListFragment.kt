@@ -22,15 +22,16 @@ import java.util.*
 class RepositoryListFragment : Fragment(), ILoadMore {
 
     companion object {
-
+        // Static Function to create object of fragment.
         fun newInstance(): RepositoryListFragment {
             return RepositoryListFragment()
         }
     }
 
-    lateinit var githubServiceViewModel: GithubServiceViewModel
-    var githubServicesList: MutableList<GithubServiceData?> = ArrayList()
-    var githubReposAdapter: GithubReposAdapter? = null
+    // Declare variables
+    private lateinit var githubServiceViewModel: GithubServiceViewModel
+    private var githubServicesList: MutableList<GithubServiceData?> = ArrayList()
+    private var githubReposAdapter: GithubReposAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,6 +77,7 @@ class RepositoryListFragment : Fragment(), ILoadMore {
     }
 
     private fun fetchGithubServices(since: String) {
+        //Fetch Github users from network using Github Api.
         githubServiceViewModel = ViewModelProvider(this).get(GithubServiceViewModel::class.java)
         if (githubServicesList.size == 0) {
             progress_circular.visibility = View.VISIBLE
