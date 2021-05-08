@@ -5,11 +5,12 @@ import com.drinfi.ticklemediaassignment.data.RepoDetailResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiInterface {
 
-    @GET("users?since=135")
-    fun getServices(): Call<List<GithubServiceData>>
+    @GET("users?")
+    fun getServices(@Query("since") since: String?): Call<MutableList<GithubServiceData>>
 
     @GET("users/{username}")
     fun getRepoDetail(@Path("username") username: String?): Call<RepoDetailResponse>

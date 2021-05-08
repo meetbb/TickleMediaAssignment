@@ -13,11 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.drinfi.ticklemediaassignment.R
 import com.drinfi.ticklemediaassignment.adapter.GithubReposAdapter
 import com.drinfi.ticklemediaassignment.data.GithubServiceData
+import com.drinfi.ticklemediaassignment.utils.ILoadMore
 import com.drinfi.ticklemediaassignment.utils.isNetworkAvailable
 import com.drinfi.ticklemediaassignment.viewmodels.GithubServiceViewModel
 import kotlinx.android.synthetic.main.fragment_repos_list.*
+import java.util.*
 
-class RepositoryListFragment : Fragment() {
+class RepositoryListFragment : Fragment(), ILoadMore {
 
     companion object {
 
@@ -27,7 +29,7 @@ class RepositoryListFragment : Fragment() {
     }
 
     lateinit var githubServiceViewModel: GithubServiceViewModel
-    var githubServicesList: List<GithubServiceData> = emptyList()
+    var githubServicesList: MutableList<GithubServiceData?> = ArrayList()
     var githubReposAdapter: GithubReposAdapter? = null
 
     override fun onCreateView(
@@ -47,33 +49,62 @@ class RepositoryListFragment : Fragment() {
         progress_circular.visibility = View.GONE
         repo_recycler_view.layoutManager = LinearLayoutManager(activity)
         repo_recycler_view.hasFixedSize()
-        githubReposAdapter = GithubReposAdapter(githubServicesList, selectedRepo = { repo ->
-            Log.e("SELECTIOn", "Selected repo is: " + repo.login)
-            activity!!.supportFragmentManager
-                .beginTransaction()
-                .replace(
-                    R.id.details_fragment,
-                    RepoDetailsFragment.newInstance(repo.login),
-                    "RepoDetails"
-                ).addToBackStack(RepoDetailsFragment::class.simpleName)
-                .commit()
-        })
+        githubReposAdapter =
+            GithubReposAdapter(
+                activity!!,
+                repo_recycler_view,
+                githubServicesList,
+                selectedRepo = { repo ->
+                    Log.e("SELECTIOn", "Selected repo is: " + repo.login)
+                    activity!!.supportFragmentManager
+                        .beginTransaction()
+                        .replace(
+                            R.id.details_fragment,
+                            RepoDetailsFragment.newInstance(repo.login),
+                            "RepoDetails"
+                        ).addToBackStack(RepoDetailsFragment::class.simpleName)
+                        .commit()
+                })
+        githubReposAdapter!!.setLoadMore(this)
         repo_recycler_view.adapter = githubReposAdapter
         if (isNetworkAvailable(activity!!)) {
-            fetchGithubServices()
+            fetchGithubServices(since = "10")
         } else {
             Toast.makeText(activity, "Please check your internet connection!", Toast.LENGTH_LONG)
                 .show()
         }
     }
 
-    private fun fetchGithubServices() {
+    private fun fetchGithubServices(since: String) {
         githubServiceViewModel = ViewModelProvider(this).get(GithubServiceViewModel::class.java)
-        progress_circular.visibility = View.VISIBLE
-        githubServiceViewModel.getGithubServices()!!.observe(this, Observer { githubServiceData ->
-            progress_circular.visibility = View.GONE
-            githubServicesList = githubServiceData
-            githubReposAdapter!!.updateData(githubServicesList)
-        })
+        if (githubServicesList.size == 0) {
+            progress_circular.visibility = View.VISIBLE
+        } else {
+            githubServicesList.add(null)
+            githubReposAdapter!!.notifyItemInserted(githubServicesList.size - 1)
+        }
+        githubServiceViewModel.getGithubServices(since)!!
+            .observe(this, Observer { githubServiceData ->
+                if (githubServicesList.size > 0) {
+                    githubServicesList.removeAt(githubServicesList.size - 1)
+                    githubReposAdapter!!.notifyItemRemoved(githubServicesList.size)
+                } else {
+                    progress_circular.visibility = View.GONE
+                }
+                for (githubData in githubServiceData) {
+                    githubServicesList.add(githubData)
+                }
+                githubReposAdapter!!.updateData(githubServicesList)
+            })
+    }
+
+    override fun onLoadMore(threshold: Int) {
+        if (isNetworkAvailable(activity!!)) {
+            fetchGithubServices(threshold.toString())
+        } else {
+            githubReposAdapter!!.setLoaded()
+            Toast.makeText(activity, "Please check your internet connection!", Toast.LENGTH_LONG)
+                .show()
+        }
     }
 }

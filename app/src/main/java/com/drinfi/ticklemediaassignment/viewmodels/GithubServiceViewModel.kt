@@ -9,10 +9,10 @@ import com.drinfi.ticklemediaassignment.repository.GithubRepository
 
 class GithubServiceViewModel : ViewModel() {
 
-    var githubServiceLiveData: MutableLiveData<List<GithubServiceData>>? = null
+    var githubServiceLiveData: MutableLiveData<MutableList<GithubServiceData>>? = null
 
-    fun getGithubServices(): LiveData<List<GithubServiceData>>? {
-        githubServiceLiveData = GithubRepository.getGithubServicesApiCall()
+    fun getGithubServices(since: String): LiveData<MutableList<GithubServiceData>>? {
+        githubServiceLiveData = GithubRepository.getGithubServicesApiCall(since)
         return githubServiceLiveData
     }
 

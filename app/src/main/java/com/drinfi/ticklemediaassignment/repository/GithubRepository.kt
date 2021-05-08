@@ -11,23 +11,23 @@ import retrofit2.Response
 
 object GithubRepository {
 
-    val githubServiceData = MutableLiveData<List<GithubServiceData>>()
+    val githubServiceData = MutableLiveData<MutableList<GithubServiceData>>()
 
     val repoDetailServiceData = MutableLiveData<RepoDetailResponse>()
 
-    fun getGithubServicesApiCall(): MutableLiveData<List<GithubServiceData>> {
+    fun getGithubServicesApiCall(since: String): MutableLiveData<MutableList<GithubServiceData>> {
 
-        val call = RetrofitClient.apiInterface.getServices()
+        val call = RetrofitClient.apiInterface.getServices(since)
 
-        call.enqueue(object : Callback<List<GithubServiceData>> {
-            override fun onFailure(call: Call<List<GithubServiceData>>, t: Throwable) {
+        call.enqueue(object : Callback<MutableList<GithubServiceData>> {
+            override fun onFailure(call: Call<MutableList<GithubServiceData>>, t: Throwable) {
                 // TODO("Not yet implemented")
                 Log.v("DEBUG : ", t.message.toString())
             }
 
             override fun onResponse(
-                call: Call<List<GithubServiceData>>,
-                response: Response<List<GithubServiceData>>
+                call: Call<MutableList<GithubServiceData>>,
+                response: Response<MutableList<GithubServiceData>>
             ) {
                 // TODO("Not yet implemented")
                 Log.i("DEBUG : ", response.body().toString())
